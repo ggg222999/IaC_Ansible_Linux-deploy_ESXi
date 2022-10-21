@@ -1,0 +1,10 @@
+---
+  - name: Create LVM Partitions
+    include_tasks: create_lvm.yml
+    tags: create_lvm
+
+  - name: mount drive to opt
+    include_tasks: create_mountpoint.yml
+    tags: add_mountpoint
+
+    

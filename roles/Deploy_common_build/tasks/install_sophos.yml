@@ -1,0 +1,22 @@
+---
+  - name: grab Sophos Install from on-prem server
+    get_url:
+      url: https://dzr-api-amzn-eu-west-1-9af7.api-upe.p.hmr.sophos.com/api/download/6d093d3222ecbd2815c22baf8ffcb822/SophosInstall.sh
+      dest: /tmp/SophosInstall.sh
+    environment:
+      http_proxy: "{{ http_proxy }}"
+      https_proxy: "{{ https_proxy }}"
+
+  - name: make it and executable
+    file:
+      path: /tmp/SophosInstall.sh
+      state: file
+      mode: a+x
+
+  - name: Run Sophos Installer
+    shell: 
+       cmd: /tmp/./SophosInstall.sh
+    environment:
+      http_proxy: "{{ http_proxy }}"
+      https_proxy: "{{ https_proxy }}"
+      no_proxy: "epdcsoppv01.insurance.lan,edrsepmpv01.insurance.lan,*.insurance.lan"

@@ -1,0 +1,7 @@
+---
+  - name: register with spacewalk
+    rhn_register:
+      state: present
+      activationkey: 1-6459b7fa71eef0f1cc2b0a93bc295d3a
+      sslcacert: /usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT
+    tags: register  

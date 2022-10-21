@@ -1,0 +1,54 @@
+---
+# create lvm volum on the block device
+  - name: Create partition
+    parted:
+      label: gpt
+      device: "{{ item.block }}"
+      number: 1
+      flags: [ lvm ]
+      part_type: primary
+      state: present
+      part_end: 100%
+    with_items:
+       - { block: "{{ block_device }}"}
+       - { block: "{{ block_device2 }}"}
+
+
+  - name: Create additional file system
+    filesystem:
+      fstype: lvm
+      dev: "{{ item.partition }}"
+    with_items:
+       - { partition: "{{ device_partition }}"}
+       - { partition: "{{ device_partition2 }}"}    
+     
+  - name: Create Volumn group on the LVM Group on newly created Dirve
+    lvg:
+      vg: "{{ item.volume_group }}"
+      pvs: "{{ item.partition }}"
+      state: present
+    with_items:
+       - { volume_group: "{{ volume_group_name }}", partition: "{{ device_partition }}"}
+       - { volume_group: "{{ volume_group_name2 }}", partition: "{{ device_partition2 }}"}
+
+
+  - name: Create Logical Volume Group
+    lvol:
+      vg: "{{ item.volume_group }}" 
+      lv: "{{ item.logical_volume }}"  
+      size: "{{ item.size }}" 
+      force: yes
+      state: present
+    with_items:
+       - { volume_group: "{{ volume_group_name }}", logical_volume: "{{ logical_volume_name }}", size: "{{ logical_vol_size }}"}
+       - { volume_group: "{{ volume_group_name2 }}", logical_volume: "{{ logical_volume_name2 }}", size: "{{ logical_vol_size2 }}"}
+
+
+  - name: format the new volume volume
+    filesystem:
+      fstype: xfs
+      dev: "/dev/{{ item.volume_group }}/{{ item.logical_volume }}" 
+    with_items:
+       - { volume_group: "{{ volume_group_name }}", logical_volume: "{{ logical_volume_name }}" }
+       - { volume_group: "{{ volume_group_name2 }}", logical_volume: "{{ logical_volume_name2 }}" }
+

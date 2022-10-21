@@ -1,0 +1,23 @@
+---
+   - name: .............Install Chrony server
+     package:
+      name: chrony 
+      state: latest
+   - name: ............Stop Chrony Service
+     service:
+       name: chronyd
+       state: stopped
+
+   - name: .............upload standard ERS Chrony Config
+     copy:
+      src: chrony.conf
+      dest: /etc/chrony.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+   - name: ............Restart Chrony Service
+     service:
+      name: chronyd
+      state: restarted

@@ -1,0 +1,13 @@
+---
+  - name: Creating our VM's within ESXi Envronment
+    include_tasks: create_vm.yml
+ 
+  
+  - include_tasks: dynamic_inventory.yml
+ 
+ 
+  - name: Now wait a good while for things to settle. 
+    pause:
+      minutes: "1"
+      #test
+ 

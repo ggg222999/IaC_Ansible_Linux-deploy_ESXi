@@ -1,0 +1,56 @@
+---
+  - name: install client tools used to connect to spacewalk server
+    yum : pkg={{item}} state=installed
+    with_items:
+      - rhn-client-tools
+      - rhn-check
+      - rhn-setup
+      - rhnsd
+      - m2crypto
+      - yum-rhn-plugin
+      - deltarpm
+    when: "ansible_distribution == 'CentOS' and  ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'"
+
+
+  - name: install new certificate
+    get_url:
+      url: http://spacewalk.insurance.lan/pub/RHN-ORG-TRUSTED-SSL-CERT
+      dest: /usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT
+      backup: yes
+      checksum: md5:d83ea853266c38ca10ceba8c2ab52488
+      use_proxy: no 
+
+
+  - name: Now Join client to SpaceWalk Server with Centos 7 joining Key
+    environment:
+      no_proxy: "*.insurance.lan,.insurance.lan,localhost,edrscvntv01.insurance.lan"
+    shell: /usr/sbin/rhnreg_ks --force --serverUrl=http://edrscvntv01.insurance.lan/XMLRPC --sslCACert=/usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT --activationkey=1-e230feb2509790ecf9b29cb7b1c63c7c
+    when:  "ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7'" 
+   
+  - name: We now need to change connecting server to http and https as there is currently a bug
+    replace:
+      path: /etc/sysconfig/rhn/up2date
+      regexp: '^serverURL=https'
+      replace: 'serverURL=http'
+
+
+  - name: Change the working directory to somedir/ before executing the command.
+    shell: rm -f *.repo
+    args:
+      chdir: /etc/yum.repos.d/
+
+  - name: Upload RPM-GPG-KEY-EPEL-7 public key
+    copy:
+      src: RPM-GPG-KEY-EPEL-7
+      dest: /etc/RPM-GPG-KEY-EPEL-7
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+
+  - name: Change the working directory to somedir/ before executing the command.
+    shell: rpm --import /etc/pki/rpm-gpg/*GPG*
+    args:
+      chdir: /etc/yum.repos.d/
+

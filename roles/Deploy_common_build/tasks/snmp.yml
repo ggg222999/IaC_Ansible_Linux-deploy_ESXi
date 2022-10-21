@@ -1,0 +1,34 @@
+
+  - name: Installing NET-SNMP
+    yum:
+     name: net-snmp
+     state: present 
+    when: "ansible_distribution == 'CentOS' and  ansible_distribution_major_version != '8'" 
+
+
+  - name: Install snmp for cento8  
+    dnf:
+      name: net-snmp
+      state: present
+    when: "ansible_distribution == 'CentOS' and  ansible_distribution_major_version == '8'" 
+
+  - name: .............upload standered ERS snmp Config
+    copy:
+     src: snmpd.conf
+     dest: /etc/snmp/snmpd.conf
+     owner: root
+     group: root
+     mode: 0644
+     backup: yes
+
+  - name: ............Restart SNMP Service
+    service:
+     name: snmpd
+     state: restarted
+     
+  - name: Enable service httpd and ensure it is not masked
+    systemd:
+      name: snmpd
+      enabled: yes
+      masked: no
+

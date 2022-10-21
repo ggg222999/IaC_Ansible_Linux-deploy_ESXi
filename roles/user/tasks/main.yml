@@ -1,0 +1,6 @@
+---
+  - name:  add or remove user groups
+    include_tasks: groupmgt.yml
+
+  - name:  create adm  users for jump server
+    include_tasks: usermgt.yml

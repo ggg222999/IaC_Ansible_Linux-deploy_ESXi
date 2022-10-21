@@ -1,0 +1,95 @@
+---
+ 
+  - name: configure Firewall SSH 22
+    firewalld:
+      zone: public
+      service: ssh
+      permanent: yes
+      state: enabled
+
+  - name: configure Firewall ports for sophos
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="{{ item.src }}" port port="{{ item.port }}" protocol="{{ item.proto }}" accept'
+      zone: public
+      permanent: yes
+      state: enabled
+    with_items:
+      - { src: 10.129.76.251, port: 8192, proto: tcp }
+      - { src: 10.129.16.43, port: 8192, proto: tcp }
+      - { src: 10.129.76.251, port: 8190, proto: tcp }
+      - { src: 10.129.16.43, port: 8190, proto: tcp }
+      - { src: 10.129.76.251, port: 8191, proto: tcp }
+      - { src: 10.129.16.43, port: 8191, proto: tcp }     
+
+  - name: configure Firewall ports for puppet access
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="{{ item.src }}" port port="{{ item.port }}" protocol="{{ item.proto }}" accept'
+      zone: public
+      permanent: yes
+      state: enabled
+    with_items:
+      - { src: 10.129.24.20, port: 8140, proto: tcp }
+      - { src: 10.129.24.20, port: 8142, proto: tcp }
+      - { src: 10.129.24.20, port: 61613, proto: tcp }
+
+
+  - name: configure Firewall ports for Spacewalk
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="{{ item.src }}" port port="{{ item.port }}" protocol="{{ item.proto }}" accept'
+      zone: public
+      permanent: yes
+      state: enabled
+    with_items:
+      - { src: 10.60.10.112, port: 5222, proto: tcp }
+  
+
+  - name: Configure firewall for snmp
+    firewalld:
+      rich_rule: 'rule family="ipv4" source address="{{ item.src }}" port port="{{ item.port }}" protocol="{{ item.proto }}" accept'
+      zone: public
+      permanent: yes
+      state: enabled
+    with_items:
+      - { src: 10.129.24.15, port: 161, proto: tcp }
+      - { src: 10.129.24.15, port: 161, proto: udp }
+      - { src: 10.129.24.14, port: 161, proto: tcp }
+      - { src: 10.129.24.14, port: 161, proto: udp }
+      - { src: 10.129.24.13, port: 161, proto: tcp }
+      - { src: 10.129.24.13, port: 161, proto: udp }
+      - { src: 10.129.24.15, port: 162, proto: tcp }
+      - { src: 10.129.24.15, port: 162, proto: udp }
+      - { src: 10.129.24.14, port: 162, proto: tcp }
+      - { src: 10.129.24.14, port: 162, proto: udp }
+      - { src: 10.129.24.13, port: 162, proto: tcp }
+      - { src: 10.129.24.13, port: 162, proto: udp }
+      - { src: 10.129.24.83, port: 161, proto: tcp }
+      - { src: 10.129.24.83, port: 161, proto: udp }
+      - { src: 10.129.24.83, port: 162, proto: tcp }
+      - { src: 10.129.24.83, port: 162, proto: udp }
+      - { src: 10.129.24.84, port: 161, proto: tcp }
+      - { src: 10.129.24.84, port: 161, proto: udp }
+      - { src: 10.129.24.84, port: 162, proto: tcp }
+      - { src: 10.129.24.84, port: 162, proto: udp }
+      - { src: 10.129.24.85, port: 161, proto: tcp }
+      - { src: 10.129.24.85, port: 161, proto: udp }
+      - { src: 10.129.24.85, port: 162, proto: tcp }
+      - { src: 10.129.24.85, port: 162, proto: udp }
+
+  - name: Set trusted servers
+    firewalld:
+      source: "{{ item }}"
+      zone: trusted
+      state: enabled
+      permanent: yes
+    with_items:
+      - 10.130.5.11
+      - 10.130.5.12   
+      - 10.130.5.13
+      - 10.130.5.19
+      - 10.130.5.20
+
+
+  - name: restart firewall
+    service:
+      name: firewalld
+      state: restarted

@@ -1,0 +1,13 @@
+---
+  - hosts: localhost
+    vars_prompt:
+      - name: ad_username
+        prompt: "Enter your username for adm-account"
+        private: no
+      - name: ad_pass
+        prompt: "Enter your password for adm account"
+
+    roles:
+      - create_vm
+      
+

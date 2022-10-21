@@ -1,0 +1,10 @@
+---
+  - name: remove webproxy from yum config
+    lineinfile:
+      dest: /etc/yum.conf
+      regexp: "^proxy"
+      line: "#proxy"
+      state: present
+      backup: yes
+
+  

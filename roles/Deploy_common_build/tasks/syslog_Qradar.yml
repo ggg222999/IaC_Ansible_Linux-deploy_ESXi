@@ -1,0 +1,8 @@
+---
+  - name: configure syslog to send to Qradar
+    lineinfile:
+      path: /etc/rsyslog.conf
+      insertafter: '^local7.*'
+      line: '*.* @10.129.16.42'
+      state: present
+    notify: restart_rsyslog  

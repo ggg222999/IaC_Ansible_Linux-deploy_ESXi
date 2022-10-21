@@ -1,0 +1,48 @@
+---
+  - name: correct resolv.conf file
+    include_tasks: resolv-file.yml
+  
+  - name: remove proxy from yum
+    include_tasks: remove_proxy.yml
+    tags: remove_proxy 
+
+  - name: configure general firewall
+    include_tasks: firewall.yml
+    tags: firewall_1st
+  
+  - name: remove repos
+    include_tasks: dissable-repos.yml
+    tags: remove_repos
+    
+  - name: perform system update
+    include_tasks: update_system.yml
+    tags: update_os
+
+  - name: Install Common Packages
+    include_tasks: Install_common.yml
+    tags: install_common_pkgs
+
+  - name: Install snmpd
+    include_tasks: snmp.yml
+    tags: snmp
+
+  - name: configure NTP server
+    include_tasks: chrony.yml
+    tags: chrony  
+    
+  - name: create Security user
+    include_tasks: create_security_user.yml
+    tags: add_nessus
+
+  - name: Configure Qradar for syslogs.
+    include_tasks: syslog_Qradar.yml
+    tags: syslog
+
+  - name: Configure Qradar for syslogs.
+    include_tasks: install_sophos.yml
+    tags: sophos
+
+  - name: Configure Qradar for syslogs.
+    include_tasks: spacewalk-centos7.yml
+    tags: spacewalk
+

@@ -1,0 +1,11 @@
+---
+  - name: copy over resolve.conf file
+    copy:
+      src: resolv.conf
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+
+  - name: proctect resolve.conf
+    shell: chattr +i /etc/resolv.conf
+    

@@ -1,0 +1,27 @@
+---
+# Add default Security user.
+
+   - name: Make sure we have a 'wheel' group
+     group:
+      name: wheel
+      state: present
+
+   - name: Allow 'wheel' group to have passwordless sudo
+     lineinfile:
+       dest: /etc/sudoers
+       state: present
+       regexp: '^#%wheel'
+       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+       validate: 'visudo -cf %s'
+
+
+   - name: Create Security user Nessus
+     user:
+       name: "nessus"
+       shell: /bin/bash
+       groups: wheel
+       comment: "Security user"
+       create_home: yes
+       password: $6$maS61Eu8QL4W0KGb$kfnzlMOXOb/gpV5RXd.vEA7CIw5lRX/kG1.x.pi7N4PIKRasmazAwQa7kb8YoDvX2kSB72Lq8ZkogGfA27leY.
+       update_password: on_create
+       state: present

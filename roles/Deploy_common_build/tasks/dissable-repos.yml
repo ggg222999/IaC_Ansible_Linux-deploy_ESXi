@@ -1,0 +1,15 @@
+---
+  - name: Remove repository (and clean up left-over metadata)
+    ini_file:
+      dest: /etc/yum.repos.d/CentOS-Base.repo
+      section: "{{ item }}"
+      option: enabled
+      value: 0
+    with_items: 
+      - base 
+      - updates 
+      - extras 
+      - centosplus 
+      - CentOS-Base
+      - group_spacewalkproject-spacewalk-2.8-client
+    ignore_errors: true

@@ -1,0 +1,34 @@
+---
+  - name: remove current yum proxy settings as we are in the DRS ENV
+    lineinfile:
+      dest: /etc/yum.conf
+      state: absent
+      regexp: ^proxy
+      
+  - name: Install common packages
+    package:
+      name: "{{ item }}"
+      disable_gpg_check: yes
+      state: latest
+    with_items:
+      - wget
+      - net-tools
+      - bind-utils
+      - vim 
+      - policycoreutils-python
+      - net-snmp-utils
+      - net-snmp
+      - yum-utils
+      - screen
+      - docker
+      - wget
+      - curl
+      - expect
+      - setroubleshoot-server
+      - sysstat
+      
+
+      # general packages to be installed
+
+
+      

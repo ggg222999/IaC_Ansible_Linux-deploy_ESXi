@@ -1,0 +1,4 @@
+ansible_python_interpreter: /usr/bin/python2.7
+SPACEWALK_ID: 1-6459b7fa71eef0f1cc2b0a93bc295d3a
+cifsFileShare1: \\epdcfilpv04\datascience
+cifsMountPoint1: /opt/mounts/data

@@ -1,0 +1,60 @@
+---
+  #- include_vars: main.yml
+  #- include_vars: esxi_drs.yml
+  #- include_vars: vm_hardware.yml
+  # Create Vm from the below template
+  - name: Create a VM from a template
+    vmware_guest:
+      hostname: "{{ vcenters.vcenter_hostname }}"
+      username: "{{ ad_username }}"
+      password: "{{ ad_pass }}"
+      validate_certs: no
+      name: "{{ item.name }}"
+      state: poweredon
+      template: "{{ vcenters.rhel_template }}"
+      datacenter: "{{ vcenters.datacenter_name }}"
+      cluster: "{{ vcenters.cluster }}"
+      folder: "/{{ vcenters.datacenter_name }}/vm/{{ item.folder }}/"
+      hardware:
+        memory_mb: "{{ item.ram }}"
+        num_cpus: "{{ item.cpu }}"
+        scsi: "{{ hws.disk_scsi_type }}"
+      disk:
+      - size_gb: "{{ hws.disk2_size }}"
+        type: "{{ hws.disk_type }}"
+        datastore: "{{ item.datastore }}"
+        state: "{{ hws.disk_state }}"
+      - size_gb: "{{ hws.disk3_size }}"
+        type: "{{ hws.disk_type }}"
+        datastore: "{{ item.datastore }}"
+        state: "{{ hws.disk_state }}"
+      - size_gb: "{{ hws.disk4_size }}"
+        type: "{{ hws.disk_type }}"
+        datastore: "{{ item.datastore }}"
+        state: "{{ hws.disk_state }}"
+      customization:
+        hostname: '{{ item.hostname }}'
+        autologon: yes
+        dns_servers:
+          - "{{ hws.dns1 }}"
+          - "{{ hws.dns2 }}"
+        domain: "{{ hws.domain }}"
+        dns_suffix: "{{ hws.domain }}"
+        password: '{{ hws.vm_password }}'
+      networks:
+      - name: '{{ item.network_name }}'
+        ip: '{{ item.ip }}'
+        type: static
+        netmask: '{{ item.netmask }}'
+        gateway: '{{ item.gateway }}'
+        dns_servers:
+          - "{{ hws.dns1 }}"
+          - "{{ hws.dns2 }}"
+        connected: true
+        device_type: '{{ hws.devicetype }}'
+        dvswitch_name: '{{ item.dvswitch }}'
+        wait_for_ip_address: yes
+    delegate_to: localhost
+    register: deploy
+    with_items: "{{ vms }}"
+    

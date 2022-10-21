@@ -1,0 +1,6 @@
+---
+  - name: Add new Vm host to our Inventory
+    add_host:
+      name: "{{ item.ip }}"
+      group: "{{ item.vm_group }}"
+    with_items: "{{ vms }}"

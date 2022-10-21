@@ -1,0 +1,14 @@
+---
+ - name: Create a login user
+   user:
+     name: "{{ item.name }}"
+     uid: "{{ item.uid }}"
+     password: "{{ item.password }}"
+     group: "{{ item.group }}"
+     groups: "{{ item.groups }}"
+     state: "{{ item.state }}"
+     shell: "{{ item.shell }}"
+     system: "{{ item.system }}"
+     createhome: "{{ item.createhome }}"
+     home: "{{ item.home }}" 
+   with_items: "{{ users }}"

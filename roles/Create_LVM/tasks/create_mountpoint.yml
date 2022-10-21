@@ -1,0 +1,36 @@
+---
+  - name: Ensure that there is no mounted volume
+    mount:
+      path: "{{ item.mount }}"
+      src: "/dev/{{ item.volume_group }}/{{ item.logical_volume }}"
+      fstype: xfs
+      boot: yes
+      opts: defaults
+      state: absent
+    ignore_errors: yes  
+    with_items:
+       - { mount: "{{ LVM_volume }}", volume_group: "{{ volume_group_name }}", logical_volume: "{{ logical_volume_name }}" }
+       - { mount: "{{ LVM_volume2 }}", volume_group: "{{ volume_group_name2 }}", logical_volume: " {{ logical_volume_name2 }}" }
+
+  - name: Create XFS File system on newly created Volume
+    filesystem:
+      fstype: xfs
+      dev: "/dev/{{ item.volume_group }}/{{ item.logical_volume }}"
+      force: yes
+    with_items:
+       - { volume_group: "{{ volume_group_name }}", logical_volume: "{{ logical_volume_name }}" }
+       - { volume_group: "{{ volume_group_name2 }}", logical_volume: "{{ logical_volume_name2 }}" }
+
+  - name: Mounting volume to selected mount location
+    mount:
+      path: "{{ item.LVM_volume }}"
+      src: "/dev/{{ item.volume_group }}/{{ item.logical_volume }}"
+      fstype: xfs
+      boot: yes
+      opts: defaults
+      state: mounted
+    with_items:
+       - { LVM_volume: "{{ LVM_volume }}",volume_group: "{{ volume_group_name }}", logical_volume: "{{ logical_volume_name }}" }
+       - { LVM_volume: "{{ LVM_volume2 }}",volume_group: "{{ volume_group_name2 }}", logical_volume: "{{ logical_volume_name2 }}" }
+
+

@@ -1,0 +1,10 @@
+---
+  - name: reconfigure resolv.conf file.
+    blockinfile:
+      path: /etc/resolv.conf
+      marker: "<!-- ANSIBLE MANAGED BLOCK -->"
+      insertbefore: ^nameserver
+      block: |
+        domain insurance.lan
+        search insusrance.lan
+    

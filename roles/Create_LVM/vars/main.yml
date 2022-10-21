@@ -1,0 +1,16 @@
+# vars file for Docker storage to be configured
+
+volume_group_name: 'homeVG'
+logical_volume_name: 'homeLV'
+logical_vol_size: '60%FREE'
+block_device: '/dev/sdb'
+device_partition: '/dev/sdb1'
+LVM_volume: /home
+
+volume_group_name2: 'appsVG'
+logical_volume_name2: 'appsLV'
+logical_vol_size2: '100%FREE'
+block_device2: '/dev/sdc'
+device_partition2: '/dev/sdc1'
+LVM_volume2: /opt
+
